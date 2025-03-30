@@ -17,28 +17,13 @@
 // export default dbConnect;
 
 
-import mongoose from "mongoose";
-
-let isConnected = false;
+import mongoose from 'mongoose';
 
 const dbConnect = async () => {
-  if (isConnected) {
-    console.log("✅ Using existing database connection");
-    return;
-  }
-
-  try {
-    const db = await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    isConnected = db.connections[0].readyState;
-    console.log("✅ MongoDB Connected");
-  } catch (error) {
-    console.error("❌ MongoDB Connection Error:", error);
-    throw new Error("Database connection failed");
-  }
+  if (mongoose.connection.readyState >= 1) return;
+  return mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true, // Deprecated, remove this line
+    useUnifiedTopology: true, // You can keep this
+  });
 };
-
-export default dbConnect;
+export default dbConnect
