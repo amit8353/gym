@@ -74,21 +74,59 @@ const loginUser = async (email, password) => {
   }
 };
 
-// Handle POST request for both login and registration
+// Function to set CORS headers
+const setCors = (res) => {
+  res.headers.set("Access-Control-Allow-Origin", "*"); // Change '*' to your frontend domain
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
+};
+
+// Handle preflight requests
+export async function OPTIONS() {
+  return setCors(new NextResponse(null, { status: 204 }));
+}
+
+// Handle authentication requests
 export async function POST(req) {
-     
+  await dbConnect();
+
   try {
-    const { action, name, email, password } = await req.json(); // action: 'register' or 'login'
-       console.log(name,"namenamename")
+    const { action, name, email, password } = await req.json();
+    console.log("📩 Request received:", { action, email });
+
+    let response;
     if (action === "register") {
-      return await registerUser(name, email, password); // Call register function
+      response = await registerUser(name, email, password);
     } else if (action === "login") {
-      return await loginUser(email, password); // Call login function
+      response = await loginUser(email, password);
     } else {
-      return NextResponse.json({ message: "Invalid action" }, { status: 400 });
+      response = NextResponse.json({ message: "Invalid action" }, { status: 400 });
     }
+
+    return setCors(response);
   } catch (error) {
-    console.error("Error handling POST request:", error);
-    return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 });
+    console.error("❌ Error handling POST request:", error);
+    return setCors(NextResponse.json({ message: "Server error", error: error.message }, { status: 500 }));
   }
 }
+
+
+// // Handle POST request for both login and registration
+// export async function POST(req) {
+     
+//   try {
+//     const { action, name, email, password } = await req.json(); // action: 'register' or 'login'
+//        console.log(name,"namenamename")
+//     if (action === "register") {
+//       return await registerUser(name, email, password); // Call register function
+//     } else if (action === "login") {
+//       return await loginUser(email, password); // Call login function
+//     } else {
+//       return NextResponse.json({ message: "Invalid action" }, { status: 400 });
+//     }
+//   } catch (error) {
+//     console.error("Error handling POST request:", error);
+//     return NextResponse.json({ message: "Server error", error: error.message }, { status: 500 });
+//   }
+// }
