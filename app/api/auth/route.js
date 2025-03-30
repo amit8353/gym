@@ -78,7 +78,7 @@ const loginUser = async (email, password) => {
 
 // Set CORS Headers
 const setCors = (res) => {
-  res.headers.set("Access-Control-Allow-Origin", "*"); // Change '*' to your frontend domain for security
+  res.headers.set("Access-Control-Allow-Origin", "https://yourfrontenddomain.com"); // Replace with your actual frontend domain
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   return res;
@@ -112,3 +112,4 @@ export async function POST(req) {
     return setCors(NextResponse.json({ message: "Server error", error: error.message }, { status: 500 }));
   }
 }
+
