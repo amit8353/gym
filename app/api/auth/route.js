@@ -123,7 +123,7 @@ export const dbConnect = async () => {
 // Register User
 const registerUser = async (name, email, password) => {
   const start = Date.now();
-  await dbConnect();
+  await dbConnect(); // Use dbConnect instead of connectDB
 
   try {
     console.log("📩 Received registration data:", { name, email });
@@ -137,7 +137,7 @@ const registerUser = async (name, email, password) => {
       return NextResponse.json({ message: "User already exists" }, { status: 400 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 8); // Reduced salt rounds from 10 to 8
+    const hashedPassword = await bcrypt.hash(password, 8); // Reduced salt rounds for better performance
 
     const user = await User.create({ name, email, password: hashedPassword });
 
@@ -151,6 +151,7 @@ const registerUser = async (name, email, password) => {
     console.log(`⏳ Execution time: ${Date.now() - start}ms`);
   }
 };
+
 
 // Login User
 const loginUser = async (email, password) => {
