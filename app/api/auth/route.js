@@ -99,20 +99,18 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import dbConnect from "../../lib/dbConnect";
+// import dbConnect from "../../lib/dbConnect";
 import User from "../../models/User";
 
-// Maintain a single database connection
-let isConnected = false;
+import mongoose from "mongoose";
 
-const connectDB = async () => {
+let isConnected = false; // Track connection status
+
+export const dbConnect = async () => {
   if (isConnected) return;
 
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI, {}); // No need for options in Mongoose 6+
 
     isConnected = mongoose.connection.readyState === 1;
     console.log("✅ MongoDB Connected!");
@@ -125,7 +123,7 @@ const connectDB = async () => {
 // Register User
 const registerUser = async (name, email, password) => {
   const start = Date.now();
-  await connectDB();
+  await dbConnect();
 
   try {
     console.log("📩 Received registration data:", { name, email });
