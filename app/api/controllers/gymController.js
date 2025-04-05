@@ -12,7 +12,7 @@ export async function createMember(req) {
 
     const authResponse = authMiddleware(req);
     if (authResponse.status === 401 || authResponse.status === 403) return authResponse;
-
+// ......................
     try {
         const { name, age, address, planDuration, phoneNumber, email } = await req.json();
 
