@@ -24,11 +24,12 @@ export async function createMember(req) {
     }
 
     const existingMember = await GymMember.findOne({ email });
+    console.log(existingMember, email)
     if (existingMember) {
       return withCors(
         NextResponse.json({ message: "Member with this email already exists" }, { status: 400 })
       );
-    }
+    } 
 
     let durationInMonths;
     if (typeof planDuration === "string") {
